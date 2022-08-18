@@ -5,20 +5,17 @@ import { Context } from '../..';
 import logo from '../../img/logo.png';
 import './style.scss';
 
-const AuthorizationWindow = ({ /*setTitle setIsAuthorized clearUserInfo */ }) => {
+const AuthorizationWindow = () => {
   const [user, setUser] = useState({ login: '', password: '' });
   const store  = useContext(Context);
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(store.isAuth);
 
   const handleChange = (key, value) => {
     setUser({...user, [key]: value});
   }
 
   useEffect(() => {
-    store.publish('setIsAuth', isAuth);
-    // setTitle('Войти в систему');
-    // setIsAuthorized(false);
-    // clearUserInfo();
+    // store.publish(isAuth isAuth);
   }, []);
 
   return (<>

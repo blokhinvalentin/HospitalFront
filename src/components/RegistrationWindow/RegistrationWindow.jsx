@@ -5,21 +5,17 @@ import { Context } from '../..';
 import logo from '../../img/logo.png';
 import './style.scss';
 
-const RegistrationWindow = ({ /* setTitle, setIsAuthorized, clearUserInfo */ }) => {
+const RegistrationWindow = () => {
   const store = useContext(Context);
   const [user, setUser] = useState({ login: '', password: '', passwordRepeat: '' })
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(store.isAuth);
 
   const handleChange = (key, value) => {
     setUser({...user, [key]: value});
   }
 
   useEffect(() => {
-    store.publish('setIsAuth', isAuth);
-    // setTitle('Зарегистрироваться в системе');
-    // setIsAuthorized(false);
-    // clearUserInfo();
-    // fillUser(user);
+    // store.publish(isAuth => setIsAuth(isAuth));
   }, []);
 
   return (<>
