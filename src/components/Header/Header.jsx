@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
-import { Context } from '../../index';
-import meds from '../../img/meds.png';
+import { Context } from 'src';
+import meds from 'src/img/meds.png';
 import './style.scss';
 
 const Header = ({ title }) => {
@@ -9,11 +9,15 @@ const Header = ({ title }) => {
 
   return (
     <header>
-      <img src={meds} alt="" />
-      <h2>{title}</h2>
+      <img 
+        src={meds} 
+        alt=""
+        className="header__logo"  
+      />
+      <h2 className="header__title">{title}</h2>
       
       <div className={isAuth ? 'user-authorized' : 'user-unauthorized'} onClick={store.logout}>
-        <button>Выход</button>
+        <button className="button__logout">Выход</button>
       </div>
     </header>
   )

@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { url } from '../components/constants';
-// import url from "../http";
+import { url } from '../../src/constants';
 
 axios.defaults.withCredentials = true;
 
-export const registration = async (login, password) => await axios.post(`${url}/registration`, { login: login, password: password });
+export const registration = (login, password) => axios.post(`${url}/registration`, { login, password });
 
-export const logIn = async (login, password) => await axios.post(`${url}/authorization`, { login: login, password: password });
+export const logIn = (login, password) => axios.post(`${url}/authorization`, { login, password });
 
-export const logOut = async () => await axios.post(`${url}/logout`);
+export const logOut = () => axios.get(`${url}/logout`);
 
-export const refresh = async () => await axios.get(`${url}/refresh`, { withCredentials: true });
+export const refresh = () => axios.get(`${url}/refresh`, { withCredentials: true });

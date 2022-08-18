@@ -1,34 +1,34 @@
 import { useState, useContext, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthorizationWindow, MeetingsPage, RegistrationWindow } from '../src/components/index';
-import { Context } from './index';
+import { Context } from '.';
+import { Authorization } from '../src/components/index';
+import { Registration } from '../src/components/index';
+import { MeetingsPage } from '../src/components/index';
 import './App.scss';
 
 const App = () => {
   const store = useContext(Context);
   const [isAuth, setIsAuth] = useState(store.isAuth);
-  console.log('isAuth', isAuth);
 
   useEffect(() => {
     store.authCheck();
     store.subscribe(isAuth => setIsAuth(isAuth));
   }, [])
 
-  if (isAuth === true) {
+  if (isAuth) {
     return (
-    <Routes>
-      <Route path="/meetings" element={<MeetingsPage />} />
-      <Route path="*" element={<Navigate to="meetings" />} />
-    </Routes>
-      
-    );
+      <Routes>
+        <Route path="/meetings" element={<MeetingsPage />} />
+        <Route path="*" element={<Navigate to="meetings" />} />
+      </Routes>
+    )
   }
 
   return (
     <Routes>
-        <Route path="/authorization" element={<AuthorizationWindow />} />
-        <Route path="/registration" element={<RegistrationWindow />} />
-        <Route path="*" element={<Navigate to="authorization" />} />
+        <Route path="/authorization" element={<Authorization />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="*" element={<Navigate to="registration" />} />
     </Routes>
   )
 }
