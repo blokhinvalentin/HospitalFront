@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Context } from '.';
-import { Authorization } from '../src/components/index';
-import { Registration } from '../src/components/index';
-import { MeetingsPage } from '../src/components/index';
-import './App.scss';
+import { Context } from 'src';
+import { Authorization } from 'src/components/index';
+import { Registration } from 'src/components/index';
+import { MeetingsPage } from 'src/components/index';
+import 'src/App.scss';
 
 const App = () => {
   const store = useContext(Context);
@@ -26,9 +26,9 @@ const App = () => {
 
   return (
     <Routes>
-        <Route path="/authorization" element={<Authorization />} />
-        <Route path="/registration" element={<Registration />} />
-        <Route path="*" element={<Navigate to="registration" />} />
+      <Route path="/authorization" element={<Authorization />} />
+      <Route path="/registration" element={<Registration />} />
+      <Route path="*" element={<Navigate to="registration" />} />
     </Routes>
   )
 }

@@ -1,12 +1,10 @@
-import axios from 'axios';
-import { url } from '../../src/constants';
+import { API_URL } from 'src/http/index';
+import $api from 'src/http/index';
 
-axios.defaults.withCredentials = true;
+export const registration = (login, password) => $api.post(`${API_URL}/registration`, { login, password });
 
-export const registration = (login, password) => axios.post(`${url}/registration`, { login, password });
+export const logIn = (login, password) => $api.post(`${API_URL}/authorization`, { login, password });
 
-export const logIn = (login, password) => axios.post(`${url}/authorization`, { login, password });
+export const logOut = () => $api.get(`${API_URL}/logout`);
 
-export const logOut = () => axios.get(`${url}/logout`);
-
-export const refresh = () => axios.get(`${url}/refresh`, { withCredentials: true });
+export const refresh = () => $api.get(`${API_URL}/refresh`, { withCredentials: true });

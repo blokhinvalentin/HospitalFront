@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Context } from 'src';
 import meds from 'src/img/meds.png';
-import './style.scss';
+import 'src/components/Header/style.scss';
 
 const Header = ({ title }) => {
   const store = useContext(Context);
@@ -15,7 +15,6 @@ const Header = ({ title }) => {
         className="header__logo"  
       />
       <h2 className="header__title">{title}</h2>
-      
       <div className={isAuth ? 'user-authorized' : 'user-unauthorized'} onClick={store.logout}>
         <button className="button__logout">Выход</button>
       </div>

@@ -1,4 +1,4 @@
-import { registration, logIn, logOut, refresh } from '../services/AuthService';
+import { registration, logIn, logOut, refresh } from 'src/services/AuthService';
 
 export default class Store {
   user = {};
@@ -21,7 +21,7 @@ export default class Store {
       this.setAuth(true);
       this.setUser(resp.data.user);
     } catch (error) {
-
+      return error;
     }
   }
 
@@ -32,7 +32,7 @@ export default class Store {
       this.setAuth(true);
       this.setUser(resp.data.user);
     } catch (error) {
-
+      return error;
     }
   }
 
@@ -42,7 +42,7 @@ export default class Store {
       this.setAuth(false);
       this.setUser({});
     } catch (error) {
-
+      return error;
     }
   }
 
@@ -55,7 +55,7 @@ export default class Store {
         this.setUser(resp.data.user);
       }
     } catch (error) {
-
+      return error;
     }
   }
 

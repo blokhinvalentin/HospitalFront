@@ -1,47 +1,41 @@
-import { useEffect, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { usePortals } from 'react-portal-hook';
 import { Context } from 'src';
-import { Header } from 'src/components';
-import { Notification } from 'src/components';
+import Header from 'src/components/Header/Header';
+import ErrorSnackbar from 'src/components/Snackbars/ErrorSnackbar/ErrorSnackbar';
 import { checkLogin, checkPassword } from 'src/helpers/validation';
 import logo from 'src/img/logo.png';
-import './style.scss';
+import 'src/components/Authorization/style.scss';
 
 const Authorization = () => {
   const store  = useContext(Context);
-  const portalManager = usePortals();
   const [user, setUser] = useState({ 
     login: '', 
     password: '' 
   });
+  const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleClick = (message) => {
+    setOpen(true);
+    setErrorMessage(message);
+  };
 
   const handleChange = (key, value) => {
     setUser({...user, [key]: value});
   }
 
-  const showNotification = (status, message) => {
-        portalManager.open(
-          portal => <Notification 
-            closeNotification={portal.close} 
-            status={status} 
-            message={message} 
-          />
-        );
-      }
-  const logIn = (login, password) => {
+  const logIn = () => {
     try {
-      if (checkLogin(login) && checkPassword(password)) {
-        return store.login(login, password);
+      if (checkLogin(user.login) && checkPassword(user.password)) {
+        return store.login(user.login, user.password);
       }
-      return showNotification('Ошибка', 'Неверное имя или пароль!');
+      
+      return handleClick("Неверный логин или пароль!");
     } catch (error) {
-      showNotification('Ошибка', 'Повторите запрос позже...');
+      handleClick('Повторите запрос позже...');
     }
   }
-
-  useEffect(() => {
-  }, []);
 
   return (
     <>
@@ -52,7 +46,6 @@ const Authorization = () => {
           alt="" 
           className="img__logo"
         />
-
         <div className="authorization__form">
           <h3 className="authorization__form-title">Войти в систему</h3>
           <p className="authorization__form-text">Логин:</p>
@@ -74,11 +67,16 @@ const Authorization = () => {
           <button 
             type="button" 
             className="authorization__form-user"
-            onClick={() => logIn(user.login, user.password)}
+            onClick={logIn}
           >
             Войти
           </button>
           <Link to="/registration" className="do-redirection-registration">Зарегистрироваться</Link>
+          <ErrorSnackbar 
+            open={open} 
+            setOpen={setOpen}
+            errorMessage={errorMessage}
+          />
         </div>
       </div>
     </>
