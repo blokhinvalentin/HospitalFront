@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from 'src';
+import { Context } from '../..';
 import Header from 'src/components/Header/Header';
-import ErrorSnackbar from 'src/components/Snackbars/ErrorSnackbar/ErrorSnackbar';
+import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
 import { checkLogin, checkPassword } from 'src/helpers/validation';
 import logo from 'src/img/logo.png';
-import 'src/components/Registration/style.scss';
+import './style.scss';
 
 const Registration = () => {
   const store = useContext(Context);
@@ -17,7 +17,7 @@ const Registration = () => {
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleClick = (message) => {
+  const handleOpen = (message) => {
     setOpen(true);
     setErrorMessage(message);
   };
@@ -29,16 +29,16 @@ const Registration = () => {
   const registration = () => {
     try {
       if (!checkLogin(user.login) || !checkPassword(user.password)) {
-        return handleClick("Неверный формат логина или пароля!");
+        return handleOpen("Неверный формат логина или пароля!");
       }
       
       if (user.password !== user.passwordRepeat) {
-        return handleClick("Пароли не совпадают!");
+        return handleOpen("Пароли не совпадают!");
       }
       
       return store.userRegistration(user.login, user.password);
     } catch (error) {
-      handleClick('Повторите запрос позже...');
+      handleOpen('Повторите запрос позже...');
     }
   }
 

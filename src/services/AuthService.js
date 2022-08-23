@@ -1,10 +1,10 @@
-import { API_URL } from 'src/http/index';
+import { url } from 'src/constants';
 import $api from 'src/http/index';
 
-export const registration = (login, password) => $api.post(`${API_URL}/registration`, { login, password });
+export const registration = (login, password) => $api.post(`${url}/registration`, { login, password });
 
-export const logIn = (login, password) => $api.post(`${API_URL}/authorization`, { login, password });
+export const logIn = (login, password) => $api.post(`${url}/authorization`, { login, password });
 
-export const logOut = () => $api.get(`${API_URL}/logout`);
+export const logOut = () => $api.get(`${url}/logout`);
 
-export const refresh = () => $api.get(`${API_URL}/refresh`, { withCredentials: true });
+export const refresh = () => $api.get(`${url}/refresh`, { withCredentials: true });

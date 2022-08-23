@@ -5,6 +5,7 @@ import MeetingsPage from './MeetingsPage/MeetingsPage';
 import Notification from './Modals/Notification/Notification';
 import ConfirmDelete from './Modals/ConfirmDelete/ConfirmDelete';
 import ConfirmEdit from './Modals/ConfirmEdit/ConfirmEdit';
+import ErrorSnackbar from './ErrorSnackbar/ErrorSnackbar';
 
 export {
   Header,
@@ -13,5 +14,6 @@ export {
   MeetingsPage,
   Notification,
   ConfirmDelete,
-  ConfirmEdit
+  ConfirmEdit,
+  ErrorSnackbar
 }

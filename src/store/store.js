@@ -38,6 +38,7 @@ export default class Store {
 
   async logout() {
     try {
+      await logOut();
       localStorage.removeItem('token');
       this.setAuth(false);
       this.setUser({});
@@ -55,6 +56,7 @@ export default class Store {
         this.setUser(resp.data.user);
       }
     } catch (error) {
+      this.setAuth(false);
       return error;
     }
   }

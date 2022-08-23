@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from 'src';
+import { Context } from '../..';
 import Header from 'src/components/Header/Header';
-import ErrorSnackbar from 'src/components/Snackbars/ErrorSnackbar/ErrorSnackbar';
+import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
 import { checkLogin, checkPassword } from 'src/helpers/validation';
 import logo from 'src/img/logo.png';
-import 'src/components/Authorization/style.scss';
+import './style.scss';
 
 const Authorization = () => {
   const store  = useContext(Context);
@@ -16,7 +16,7 @@ const Authorization = () => {
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleClick = (message) => {
+  const handleOpen = (message) => {
     setOpen(true);
     setErrorMessage(message);
   };
@@ -27,13 +27,13 @@ const Authorization = () => {
 
   const logIn = () => {
     try {
-      if (checkLogin(user.login) && checkPassword(user.password)) {
-        return store.login(user.login, user.password);
+      if (!checkLogin(user.login) || !checkPassword(user.password)) {
+        return handleOpen("Неверный логин или пароль!");
       }
       
-      return handleClick("Неверный логин или пароль!");
+      store.login(user.login, user.password);
     } catch (error) {
-      handleClick('Повторите запрос позже...');
+      handleOpen('Повторите запрос позже...');
     }
   }
 

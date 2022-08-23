@@ -1,13 +1,14 @@
 export const checkLogin = (login) => {
-  return (login.length >= 6 && typeof login === 'string') ? true : false;
+  return (login.length >= 6 
+    && typeof login === 'string'
+    && (/[a-z]/).test(login)
+  )
 }
 
 export const checkPassword = (password) => {
   return (password.length >= 6
-    && password.match(/[0-9]/) 
-    && password.match(/[a-z]/)
+    && (/[0-9]/).test(password)
+    && (/[a-z]/).test(password)
     && typeof password === 'string'
-  ) 
-    ? true 
-    : false;
+  )
 }

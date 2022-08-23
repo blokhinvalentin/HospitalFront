@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Context } from 'src';
-import { Authorization } from 'src/components/index';
-import { Registration } from 'src/components/index';
-import { MeetingsPage } from 'src/components/index';
-import 'src/App.scss';
+import { Context } from '.';
+import Authorization from 'src/components/Authorization/Authorization';
+import Registration from 'src/components/Registration/Registration';
+import MeetingsPage from 'src/components/MeetingsPage/MeetingsPage';
+import './App.scss';
 
 const App = () => {
   const store = useContext(Context);
