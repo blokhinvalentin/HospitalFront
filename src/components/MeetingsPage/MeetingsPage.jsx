@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { usePortals } from 'react-portal-hook';
 import moment from 'moment';
-import { addMeeting, getMeetings, editMeeting, deleteMeeting } from 'src/services/requests';
-import ConfirmEdit from 'src/components/Modals/ConfirmEdit/ConfirmEdit';
-import ConfirmDelete from 'src/components/Modals/ConfirmDelete/ConfirmDelete';
+import { Context } from 'src';
+import { addMeeting, editMeeting, deleteMeeting } from 'src/services/MeetingService';
+import ConfirmEdit from 'src/components/ConfirmEdit/ConfirmEdit';
+import ConfirmDelete from 'src/components/ConfirmDelete/ConfirmDelete';
 import Header from 'src/components/Header/Header';
 import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
 import deleteImg from 'src/img/delete.svg';
@@ -11,6 +12,7 @@ import editImg from 'src/img/edit.svg';
 import './style.scss';
 
 const MeetingsPage = () => {
+  const store  = useContext(Context);
   const portalManager = usePortals();
   const [meetingToAdd, setMeetingToAdd] = useState({ 
     patientName: '', 
@@ -32,9 +34,9 @@ const MeetingsPage = () => {
     setMeetingToAdd({...meetingToAdd, [key]: value});
   }
 
-  const getAllMeetings = async () => {
+  const getMeetings = async () => {
     try {
-      const resp = await getMeetings();
+      const resp = await store.getAllMeetings();
       if (resp.statusText === 'OK') {
         setMeetings(resp.data);
       }
@@ -61,20 +63,13 @@ const MeetingsPage = () => {
 
   const addNewMeeting = async () => {
     try {
-      if (meetingToAdd.patientName === ''
-        || meetingToAdd.doctorName === ''
-        || meetingToAdd.date === ''
-        || meetingToAdd.reports === ''
-      ) {
-        return showSnackbar('Заполните пустые поля!');
-      }
       const resp = await addMeeting(meetingToAdd);
       if (resp.statusText === 'OK') {
         setMeetings([...meetings, resp.data]);
         clearPatientInfo();
       }
     } catch (error) {
-
+      showSnackbar('Невозможно добавить прием!');
     }
   }
 
@@ -105,23 +100,20 @@ const MeetingsPage = () => {
       }
     }
 
-    const showConfirmDelete = (status, message, id) => {
+    const showConfirmDelete = (id) => {
       portalManager.open(
         portal => <ConfirmDelete 
           closeConfirmDelete={portal.close} 
-          status={status} 
-          message={message} 
           deleteOneMeeting={deleteOneMeeting}
           id={id}
         />
       );
     }
 
-    const showConfirmEdit = (status, meeting) => {
+    const showConfirmEdit = (meeting) => {
     portalManager.open(
       portal => <ConfirmEdit
         closeConfirmEdit={portal.close} 
-        status={status} 
         meeting={meeting}
         editOneMeeting={editOneMeeting}
       />
@@ -129,7 +121,9 @@ const MeetingsPage = () => {
   }
 
   useEffect(() => {
-    getAllMeetings();
+    if (meetings.length === 0) {
+      getMeetings();
+    }
     ifEmpty();
   }, [meetingToAdd]);
 
@@ -196,23 +190,20 @@ const MeetingsPage = () => {
                   <td className="cell__meeting-date">{moment(meeting.date).format('DD.MM.YYYY')}</td>
                   <td className="cell__patient-reports">{meeting.reports}</td>
                   <td className="edit-or-delete">
-                    {<>
-                      <button 
-                        type="button" 
-                        className="delete-meeting__button"
-                        onClick={() => showConfirmDelete('Удалить прием', 'Вы действительно хотите удалить прием?', meeting._id)}
-                      >
-                        <img src={deleteImg} alt="" />
-                      </button>
-
-                      <button 
-                        type="button" 
-                        className="edit-meeting__button"
-                        onClick={() => showConfirmEdit('Изменить прием', meeting)}
-                      >
-                        <img src={editImg} alt="" />
-                      </button>
-                    </>}
+                    <button 
+                      type="button" 
+                      className="delete-meeting__button"
+                      onClick={() => showConfirmDelete(meeting._id)}
+                    >
+                      <img src={deleteImg} alt="" />
+                    </button>
+                    <button 
+                      type="button" 
+                      className="edit-meeting__button"
+                      onClick={() => showConfirmEdit(meeting)}
+                    >
+                      <img src={editImg} alt="" />
+                    </button>
                   </td>
                 </tr>
               ))}

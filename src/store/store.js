@@ -1,4 +1,5 @@
 import { registration, logIn, logOut, refresh } from 'src/services/AuthService';
+import { getMeetings } from 'src/services/MeetingService';
 
 export default class Store {
   user = {};
@@ -58,6 +59,15 @@ export default class Store {
     } catch (error) {
       this.setAuth(false);
       return error;
+    }
+  }
+
+  async getAllMeetings() {
+    try {
+      const resp = await getMeetings();
+      return resp;
+    } catch (error) {
+      return (error);
     }
   }
 
