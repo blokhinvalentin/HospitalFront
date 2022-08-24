@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from '../..';
+import { Context } from 'src';
 import Header from 'src/components/Header/Header';
 import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
 import { checkLogin, checkPassword } from 'src/helpers/validation';
@@ -14,11 +14,11 @@ const Registration = () => {
     password: '', 
     passwordRepeat: '' 
   });
-  const [open, setOpen] = useState(false);
+  const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleOpen = (message) => {
-    setOpen(true);
+  const showSnackbar = (message) => {
+    setIsShown(true);
     setErrorMessage(message);
   };
 
@@ -26,19 +26,25 @@ const Registration = () => {
     setUser({...user, [key]: value});
   }
 
-  const registration = () => {
+  const registration = async () => {
     try {
       if (!checkLogin(user.login) || !checkPassword(user.password)) {
-        return handleOpen("Неверный формат логина или пароля!");
+        showSnackbar("Неверный формат логина или пароля!");
+        return;
       }
       
       if (user.password !== user.passwordRepeat) {
-        return handleOpen("Пароли не совпадают!");
+        showSnackbar("Пароли не совпадают!");
+        return;
       }
       
-      return store.userRegistration(user.login, user.password);
+      const errorMessage = await store.userRegistration(user.login, user.password);
+      if (errorMessage) {
+        showSnackbar(errorMessage.response.data.message);
+        return;
+      }
     } catch (error) {
-      handleOpen('Повторите запрос позже...');
+      showSnackbar('Повторите запрос позже...');
     }
   }
 
@@ -86,8 +92,8 @@ const Registration = () => {
           </button>
           <Link to="/authorization" className="do-redirection-authorization">Авторизоваться</Link>
           <ErrorSnackbar 
-            open={open} 
-            setOpen={setOpen}
+            isShown={isShown} 
+            setIsShown={setIsShown}
             errorMessage={errorMessage}
           />
         </div>

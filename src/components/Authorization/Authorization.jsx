@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from '../..';
+import { Context } from 'src';
 import Header from 'src/components/Header/Header';
 import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
 import { checkLogin, checkPassword } from 'src/helpers/validation';
@@ -13,11 +13,11 @@ const Authorization = () => {
     login: '', 
     password: '' 
   });
-  const [open, setOpen] = useState(false);
+  const [isShown, setIsShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleOpen = (message) => {
-    setOpen(true);
+  const showSnackbar = (message) => {
+    setIsShown(true);
     setErrorMessage(message);
   };
 
@@ -25,15 +25,20 @@ const Authorization = () => {
     setUser({...user, [key]: value});
   }
 
-  const logIn = () => {
+  const logIn = async () => {
     try {
       if (!checkLogin(user.login) || !checkPassword(user.password)) {
-        return handleOpen("Неверный логин или пароль!");
+        showSnackbar('Неверный логин или пароль!');
+        return;
       }
       
-      store.login(user.login, user.password);
+      const errorMessage = await store.login(user.login, user.password);
+      if (errorMessage) {
+        showSnackbar(errorMessage.response.data.message);
+        return;
+      }
     } catch (error) {
-      handleOpen('Повторите запрос позже...');
+      showSnackbar('Повторите запрос позже...');
     }
   }
 
@@ -73,8 +78,8 @@ const Authorization = () => {
           </button>
           <Link to="/registration" className="do-redirection-registration">Зарегистрироваться</Link>
           <ErrorSnackbar 
-            open={open} 
-            setOpen={setOpen}
+            isShown={isShown} 
+            setIsShown={setIsShown}
             errorMessage={errorMessage}
           />
         </div>

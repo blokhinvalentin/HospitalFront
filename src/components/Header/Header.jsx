@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Context } from '../..';
+import { Context } from 'src';
 import meds from 'src/img/meds.png';
 import './style.scss';
 

@@ -1,14 +1,10 @@
+const loginCheck = /^[0-9A-Za-z]{6,}$/;
+const passwordCheck = /^.*(?=.{6,})(?=.*\d)(?=.*[a-z]).*$/;
+
 export const checkLogin = (login) => {
-  return (login.length >= 6 
-    && typeof login === 'string'
-    && (/[a-z]/).test(login)
-  )
+  return loginCheck.test(login);
 }
 
 export const checkPassword = (password) => {
-  return (password.length >= 6
-    && (/[0-9]/).test(password)
-    && (/[a-z]/).test(password)
-    && typeof password === 'string'
-  )
+  return passwordCheck.test(password);
 }
