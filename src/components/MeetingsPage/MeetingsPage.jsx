@@ -1,99 +1,148 @@
-import { useEffect, useState } from 'react';
-import { addMeeting, getMeetings } from '../../services/requests';
-import Header from '../Header/Header';
-import Meeting from '../Meeting/Meeting';
+import { useEffect, useState, useContext } from 'react';
+import { usePortals } from 'react-portal-hook';
+import moment from 'moment';
+import { Context } from 'src';
+import { addMeeting, editMeeting, deleteMeeting } from 'src/services/MeetingService';
+import ConfirmEdit from 'src/components/ConfirmEdit/ConfirmEdit';
+import ConfirmDelete from 'src/components/ConfirmDelete/ConfirmDelete';
+import Header from 'src/components/Header/Header';
+import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
+import deleteImg from 'src/img/delete.svg';
+import editImg from 'src/img/edit.svg';
 import './style.scss';
 
-const MeetingsPage = ({ 
-  setTitle, 
-  showNotification,  
-  showConfirmDelete, 
-  deleteOneMeeting, 
-  showConfirmEdit, 
-  editOneMeeting,
-  navigate,
-  isAuthorized
-}) => {
-  const [patientToAdd, setPatientToAdd] = useState({ patientName: '', doctorName: '', date: '', reports: '' }); 
+const MeetingsPage = () => {
+  const store  = useContext(Context);
+  const portalManager = usePortals();
+  const [meetingToAdd, setMeetingToAdd] = useState({ 
+    patientName: '', 
+    doctorName: '', 
+    date: '', 
+    reports: '' 
+  });
   const [meetings, setMeetings] = useState([]);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isSnackbarOpened, setIsSnackbarOpened] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const getAllMeetings = async () => {
+  const showSnackbar = (message) => {
+    setIsSnackbarOpened(true);
+    setErrorMessage(message);
+  };
+
+  const handleChange = (key, value) => {
+    setMeetingToAdd({...meetingToAdd, [key]: value});
+  }
+
+  const getMeetings = async () => {
     try {
-      const resp = await getMeetings();
+      const resp = await store.getAllMeetings();
       if (resp.statusText === 'OK') {
         setMeetings(resp.data);
       }
     } catch (error) {
-      showNotification('Ошибка!', 'Невозможно получить приемы!');
+      showSnackbar('Невозможно получить приемы!');
     }
   }
 
   const ifEmpty = () => {
-    if (patientToAdd.patientName !== ''
-      && patientToAdd.doctorName !== ''
-      && patientToAdd.date !== ''
-      && patientToAdd.reports !== ''
+    if (meetingToAdd.patientName === ''
+      || meetingToAdd.doctorName === ''
+      || meetingToAdd.date === ''
+      || meetingToAdd.reports === ''
     ) {
-      return setIsDisabled(false);
-    } else {
       return setIsDisabled(true);
     }
+    return setIsDisabled(false);
   }
 
   const clearPatientInfo = () => {
-    setPatientToAdd({...patientToAdd, patientName: '', doctorName: '', date: '', reports: ''
-    });
+    setMeetingToAdd({...meetingToAdd, patientName: '', doctorName: '', date: '', reports: '' });
   }
 
   const addNewMeeting = async () => {
     try {
-      if (patientToAdd.patientName === ''
-        || patientToAdd.doctorName === ''
-        || patientToAdd.date === ''
-        || patientToAdd.reports === ''
-      ) {
-        return showNotification('Ошибка!', 'Заполните пустые поля!');
-      }
-      const resp = await addMeeting(patientToAdd.patientName, patientToAdd.doctorName, patientToAdd.date, patientToAdd.reports);
+      const resp = await addMeeting(meetingToAdd);
       if (resp.statusText === 'OK') {
         setMeetings([...meetings, resp.data]);
         clearPatientInfo();
       }
     } catch (error) {
-
+      showSnackbar('Невозможно добавить прием!');
     }
   }
 
+    const deleteOneMeeting = async (id) => {
+    try {
+      const resp = await deleteMeeting(id);
+      if (resp.statusText === 'OK') {
+        setMeetings(meetings.filter(meeting => meeting._id !== id));
+      }
+    } catch (error) {
+      showSnackbar('Невозможно удалить прием!');
+    }
+  }
+
+  const editOneMeeting = async (meeting) => {
+    try {
+        const resp = await editMeeting(meeting);
+        if (resp.statusText === 'OK') {
+          setMeetings(meetings.map(visit => {
+            if (visit._id === meeting._id) {
+              visit = resp.data;
+            }
+            return visit;
+          }))
+        }
+      } catch (error) {
+        showSnackbar('Невозможно изменить прием!');
+      }
+    }
+
+    const showConfirmDelete = (id) => {
+      portalManager.open(
+        portal => <ConfirmDelete 
+          closeConfirmDelete={portal.close} 
+          deleteOneMeeting={deleteOneMeeting}
+          id={id}
+        />
+      );
+    }
+
+    const showConfirmEdit = (meeting) => {
+    portalManager.open(
+      portal => <ConfirmEdit
+        closeConfirmEdit={portal.close} 
+        meeting={meeting}
+        editOneMeeting={editOneMeeting}
+      />
+    );
+  }
+
   useEffect(() => {
-    getAllMeetings();
-    // setTitle('Приемы');
-    // setIsAuthorized(true);
-    // if (!isAuthorized) {
-    //   navigate('/authorization');
-    // }
+    if (meetings.length === 0) {
+      getMeetings();
+    }
     ifEmpty();
-  }, [patientToAdd]);
+  }, [meetingToAdd]);
 
   return (
     <>
       <Header title="Приемы"/>
-
       <div className="add-option">
         <div className="name">
           <p>Имя:</p>
           <input 
             type="text" 
-            value={patientToAdd.patientName}
-            onChange={(event) => setPatientToAdd({...patientToAdd, patientName: event.target.value})}
+            value={meetingToAdd.patientName}
+            onChange={(event) => handleChange('patientName', event.target.value)}
           />
         </div>
-
         <div className="doctor">
           <p>Врач:</p>
           <select
-            value={patientToAdd.doctorName}
-            onChange={(event) => setPatientToAdd({...patientToAdd, doctorName: event.target.value})}
+            value={meetingToAdd.doctorName}
+            onChange={(event) => handleChange('doctorName', event.target.value)}
           >
             <option value="" disabled></option>
             <option value="Доктор Врач">Доктор Врач</option>
@@ -101,31 +150,27 @@ const MeetingsPage = ({
             <option value="А. Б. Ввфывыфвфы">А. Б. Ввфывыфвфы</option>
           </select>
         </div>
-
         <div className="date">
           <p>Дата:</p>
           <input 
             type="date"
-            value={patientToAdd.date} 
-            onChange={(event) => setPatientToAdd({...patientToAdd, date: event.target.value})}
+            value={meetingToAdd.date} 
+            onChange={(event) => handleChange('date', event.target.value)}
           />
         </div>
-
         <div className="reports">
           <p>Жалобы:</p>
           <input 
             type="text" 
-            value={patientToAdd.reports}
-            onChange={(event) => setPatientToAdd({...patientToAdd, reports: event.target.value})}
+            value={meetingToAdd.reports}
+            onChange={(event) => handleChange('reports', event.target.value)}
           />
         </div>
-
         <button 
           type="button" 
           onClick={() => addNewMeeting()}
           disabled={isDisabled}>Добавить</button>
       </div>
-
       <div className="meetings-info">
         <div className="info-headers">
           <p className="patient-name__header">Имя</p>
@@ -134,21 +179,42 @@ const MeetingsPage = ({
           <p className="patient-reports__header">Жалобы</p>
           <p className="edit-or-delete__header"></p>
         </div>
-
         <div className="meetings-info__list">
-            {meetings.map((meeting, index) => (
-              <Meeting 
-                key={index} 
-                meeting={meeting} 
-                showConfirmDelete={showConfirmDelete}
-                deleteOneMeeting={deleteOneMeeting}
-                showConfirmEdit={showConfirmEdit}
-                editOneMeeting={editOneMeeting}
-              />
-            ))}
+          <table className="table">
+            <tbody className="table__body">
+              {meetings.map((meeting, index) => (
+                <tr key={index}>
+                  <td className="cell__patient-name">{meeting.patientName}</td>
+                  <td className="cell__doctor-name">{meeting.doctorName}</td>
+                  <td className="cell__meeting-date">{moment(meeting.date).format('DD.MM.YYYY')}</td>
+                  <td className="cell__patient-reports">{meeting.reports}</td>
+                  <td className="edit-or-delete">
+                    <button 
+                      type="button" 
+                      className="delete-meeting__button"
+                      onClick={() => showConfirmDelete(meeting._id)}
+                    >
+                      <img src={deleteImg} alt="" />
+                    </button>
+                    <button 
+                      type="button" 
+                      className="edit-meeting__button"
+                      onClick={() => showConfirmEdit(meeting)}
+                    >
+                      <img src={editImg} alt="" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-
       </div>
+      <ErrorSnackbar 
+        isSnackbarOpened={isSnackbarOpened} 
+        setIsSnackbarOpened={setIsSnackbarOpened}
+        errorMessage={errorMessage}
+      />
     </>
   )
 }

@@ -7,7 +7,6 @@ import Store from './store/store';
 import './index.scss';
 
 const store = new Store();
-// console.log(store.login('asd', 'asd'));
 
 export const Context = createContext(store);
 

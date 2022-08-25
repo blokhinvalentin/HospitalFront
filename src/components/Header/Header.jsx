@@ -1,19 +1,25 @@
-import { useState, useContext } from 'react';
-import { Context } from '../../index';
-import meds from '../../img/meds.png';
+import { useContext } from 'react';
+import { Context } from 'src';
+import meds from 'src/img/meds.png';
 import './style.scss';
 
 const Header = ({ title }) => {
   const store = useContext(Context);
-  const [isAuth, setIsAuth] = useState(store.isAuth);
+
+  const logOut = () => {
+    return store.logout();
+  }
 
   return (
     <header>
-      <img src={meds} alt="" />
-      <h2>{title}</h2>
-      
-      <div className={isAuth ? 'user-authorized' : 'user-unauthorized'} onClick={store.logout}>
-        <button>Выход</button>
+      <img 
+        src={meds} 
+        alt=""
+        className="header__logo"  
+      />
+      <h2 className="header__title">{title}</h2>
+      <div className={store.isAuth ? 'user-authorized' : 'user-unauthorized'} onClick={logOut}>
+        <button className="header-button__logout">Выход</button>
       </div>
     </header>
   )
