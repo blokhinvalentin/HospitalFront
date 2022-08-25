@@ -6,27 +6,27 @@ export default class Store {
   isAuth = false;
   authState = [];
 
-  setUser(userInfo) {
+  setUser = (userInfo) => {
     this.user = userInfo;
   }
 
-  setAuth(isAuthorized) {
+  setAuth = (isAuthorized) => {
     this.isAuth = isAuthorized;
     this.publish(this.isAuth);
   }
 
-  async login(login, password) {
+  login = async (login, password) => {
     try {
       const resp = await logIn(login, password);
       localStorage.setItem('token', resp.data.accessToken);
       this.setAuth(true);
       this.setUser(resp.data.user);
     } catch (error) {
-      return error;
+      return error.response.data.message;
     }
   }
 
-  async userRegistration (login, password) {
+  userRegistration = async (login, password) => {
     try {
       const resp = await registration(login, password);
       localStorage.setItem('token', resp.data.accessToken);
@@ -37,7 +37,7 @@ export default class Store {
     }
   }
 
-  async logout() {
+  logout = async () => {
     try {
       await logOut();
       localStorage.removeItem('token');
@@ -48,7 +48,7 @@ export default class Store {
     }
   }
 
-  async authCheck() {
+  authCheck = async () => {
     try {
       if (localStorage.getItem('token')) {
         const resp = await refresh();
@@ -62,7 +62,7 @@ export default class Store {
     }
   }
 
-  async getAllMeetings() {
+  getAllMeetings = async () => {
     try {
       const resp = await getMeetings();
       return resp;
@@ -71,14 +71,14 @@ export default class Store {
     }
   }
 
-  async subscribe(event) {
+  subscribe = async (event) => {
     if (!this.authState) {
       this.authState = [];
     }
     this.authState.push(event);
   }
 
-  async publish(data) {
+  publish = async (data) => {
     if (!this.authState) return;
     this.authState.forEach(setData => setData(data));
   }

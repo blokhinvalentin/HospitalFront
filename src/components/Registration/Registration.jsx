@@ -14,11 +14,11 @@ const Registration = () => {
     password: '', 
     passwordRepeat: '' 
   });
-  const [isShown, setIsShown] = useState(false);
+  const [isSnackbarOpened, setIsSnackbarOpened] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const showSnackbar = (message) => {
-    setIsShown(true);
+    setIsSnackbarOpened(true);
     setErrorMessage(message);
   };
 
@@ -27,24 +27,20 @@ const Registration = () => {
   }
 
   const registration = async () => {
-    try {
-      if (!checkLogin(user.login) || !checkPassword(user.password)) {
-        showSnackbar("Неверный формат логина или пароля!");
-        return;
-      }
-      
-      if (user.password !== user.passwordRepeat) {
-        showSnackbar("Пароли не совпадают!");
-        return;
-      }
-      
-      const errorMessage = await store.userRegistration(user.login, user.password);
-      if (errorMessage) {
-        showSnackbar(errorMessage.response.data.message);
-        return;
-      }
-    } catch (error) {
-      showSnackbar('Повторите запрос позже...');
+    if (!checkLogin(user.login) || !checkPassword(user.password)) {
+      showSnackbar("Неверный формат логина или пароля!");
+      return;
+    }
+    
+    if (user.password !== user.passwordRepeat) {
+      showSnackbar("Пароли не совпадают!");
+      return;
+    }
+    
+    const errorMessage = await store.userRegistration(user.login, user.password);
+    if (errorMessage) {
+      showSnackbar(errorMessage.response.data.message);
+      return;
     }
   }
 
@@ -92,8 +88,8 @@ const Registration = () => {
           </button>
           <Link to="/authorization" className="do-redirection-authorization">Авторизоваться</Link>
           <ErrorSnackbar 
-            isShown={isShown} 
-            setIsShown={setIsShown}
+            isSnackbarOpened={isSnackbarOpened} 
+            setIsSnackbarOpened={setIsSnackbarOpened}
             errorMessage={errorMessage}
           />
         </div>

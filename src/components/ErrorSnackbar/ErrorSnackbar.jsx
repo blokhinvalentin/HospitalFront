@@ -2,16 +2,16 @@ import { Fragment, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 
-const ErrorSnackbar = ({ isShown, setIsShown, errorMessage }) => {
+const ErrorSnackbar = ({ isSnackbarOpened, setIsSnackbarOpened, errorMessage }) => {
   const handleClose = (reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setIsShown(false);
+    setIsSnackbarOpened(false);
   };
 
   useEffect(() => {
-    setIsShown(false);
+    setIsSnackbarOpened(false);
   }, [])
 
   const action = (
@@ -27,15 +27,13 @@ const ErrorSnackbar = ({ isShown, setIsShown, errorMessage }) => {
   );
 
   return (
-    <div>
       <Snackbar
-        open={isShown}
+        open={isSnackbarOpened}
         autoHideDuration={5000}
         onClose={handleClose}
         message={errorMessage}
         action={action}
       />
-    </div>
   );
 }
 

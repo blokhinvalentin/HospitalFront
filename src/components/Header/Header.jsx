@@ -19,7 +19,7 @@ const Header = ({ title }) => {
       />
       <h2 className="header__title">{title}</h2>
       <div className={store.isAuth ? 'user-authorized' : 'user-unauthorized'} onClick={logOut}>
-        <button className="button__logout">Выход</button>
+        <button className="header-button__logout">Выход</button>
       </div>
     </header>
   )

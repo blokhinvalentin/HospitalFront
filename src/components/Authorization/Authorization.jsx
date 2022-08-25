@@ -13,11 +13,11 @@ const Authorization = () => {
     login: '', 
     password: '' 
   });
-  const [isShown, setIsShown] = useState(false);
+  const [isSnackbarOpened, setIsSnackbarOpened] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const showSnackbar = (message) => {
-    setIsShown(true);
+    setIsSnackbarOpened(true);
     setErrorMessage(message);
   };
 
@@ -26,19 +26,15 @@ const Authorization = () => {
   }
 
   const logIn = async () => {
-    try {
-      if (!checkLogin(user.login) || !checkPassword(user.password)) {
-        showSnackbar('Неверный логин или пароль!');
-        return;
-      }
-      
-      const errorMessage = await store.login(user.login, user.password);
-      if (errorMessage) {
-        showSnackbar(errorMessage.response.data.message);
-        return;
-      }
-    } catch (error) {
-      showSnackbar('Повторите запрос позже...');
+    if (!checkLogin(user.login) || !checkPassword(user.password)) {
+      showSnackbar('Неверный логин или пароль!');
+      return;
+    }
+    
+    const errorMessage = await store.login(user.login, user.password);
+    if (errorMessage) {
+      showSnackbar(errorMessage);
+      return;
     }
   }
 
@@ -78,8 +74,8 @@ const Authorization = () => {
           </button>
           <Link to="/registration" className="do-redirection-registration">Зарегистрироваться</Link>
           <ErrorSnackbar 
-            isShown={isShown} 
-            setIsShown={setIsShown}
+            isSnackbarOpened={isSnackbarOpened} 
+            setIsSnackbarOpened={setIsSnackbarOpened}
             errorMessage={errorMessage}
           />
         </div>
