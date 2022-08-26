@@ -1,5 +1,4 @@
 import { registration, logIn, logOut, refresh } from 'src/services/AuthService';
-import { getMeetings, addMeeting, editMeeting, deleteMeeting } from 'src/services/MeetingService';
 
 export default class Store {
   user = {};
