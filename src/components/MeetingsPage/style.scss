@@ -183,9 +183,7 @@
     width: 24px;
     background: none;
     margin: 35px 20px 10px 20px;
-    flex: {
-      direction: row;
-    }
+    flex-direction: row;
 
     &:hover {
       cursor: pointer;
