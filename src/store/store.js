@@ -65,24 +65,6 @@ export default class Store {
     }
   }
 
-  getAllMeetings = async () => {
-    try {
-      const resp = await getMeetings();
-      return resp;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  addNewMeeting = async () => {
-    try {
-      const resp = await addMeeting();
-      return resp;
-    } catch (error) {
-      return error;
-    }
-  }
-
   subscribe = async (event) => {
     if (!this.authState) {
       this.authState = [];
