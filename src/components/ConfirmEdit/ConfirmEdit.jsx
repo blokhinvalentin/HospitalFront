@@ -7,10 +7,9 @@ const ConfirmEdit = ({ closeConfirmEdit, editOneMeeting, meeting }) => {
     patientName: meeting.patientName,
     doctorName: meeting.doctorName,
     date: meeting.date,
-    reports: meeting.reports,
+    reports: meeting.reports,    
     _id: meeting._id
   });
-  const _id = meeting._id;
 
   const handleChange = (key, value) => {
     setMeetingToEdit({...meetingToEdit, [key]: value});
@@ -74,7 +73,10 @@ const ConfirmEdit = ({ closeConfirmEdit, editOneMeeting, meeting }) => {
               // meeting = { patientName, doctorName, date, reports, _id };
               editOneMeeting(meetingToEdit);
               closeConfirmEdit();
-            }}>Сохранить</button>
+            }}
+          >
+            Сохранить
+          </button>
         </div>
       </div>
     </div>
