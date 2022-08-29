@@ -1,4 +1,4 @@
-import { registration, logIn, logOut, refresh } from 'src/services/AuthService';
+import { registration, logIn, logOut, refresh } from 'src/services/auth-service';
 
 export default class Store {
   user = {};
