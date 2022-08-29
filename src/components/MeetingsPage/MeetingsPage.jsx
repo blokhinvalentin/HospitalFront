@@ -3,8 +3,6 @@ import { usePortals } from 'react-portal-hook';
 import moment from 'moment';
 import { Context } from 'src';
 import { getMeetings, addMeeting, editMeeting, deleteMeeting } from 'src/services/MeetingService';
-import ConfirmEdit from 'src/components/ConfirmEdit/ConfirmEdit';
-import ConfirmDelete from 'src/components/ConfirmDelete/ConfirmDelete';
 import Header from 'src/components/Header/Header';
 import ErrorSnackbar from 'src/components/ErrorSnackbar/ErrorSnackbar';
 import deleteImg from 'src/img/delete.svg';
@@ -60,65 +58,6 @@ const MeetingsPage = () => {
     setMeetingToAdd({...meetingToAdd, patientName: '', doctorName: '', date: '', reports: '' });
   }
 
-  const addNewMeeting = async () => {
-    try {
-      const resp = await addMeeting(meetingToAdd);
-      if (resp.statusText === 'OK') {
-        setMeetings([...meetings, resp.data]);
-        clearPatientInfo();
-      }
-    } catch (error) {
-      showSnackbar('Невозможно добавить прием!');
-    }
-  }
-
-  const deleteOneMeeting = async (id) => {
-    try {
-      const resp = await deleteMeeting(id);
-      if (resp.statusText === 'OK') {
-        setMeetings(meetings.filter(meeting => meeting._id !== id));
-      }
-    } catch (error) {
-      showSnackbar('Невозможно удалить прием!');
-    }
-  }
-
-  const editOneMeeting = async (meeting) => {
-    try {
-      const resp = await editMeeting(meeting);
-      if (resp.statusText === 'OK') {
-        setMeetings(meetings.map(visit => {
-          if (visit._id === meeting._id) {
-            visit = resp.data;
-          }
-          return visit;
-        }))
-      }
-    } catch (error) {
-      showSnackbar('Невозможно изменить прием!');
-    }
-  }
-
-  const showConfirmDelete = (id) => {
-    portalManager.open(
-      portal => <ConfirmDelete 
-        closeConfirmDelete={portal.close} 
-        deleteOneMeeting={deleteOneMeeting}
-        id={id}
-      />
-    );
-  }
-
-  const showConfirmEdit = (meeting) => {
-    portalManager.open(
-      portal => <ConfirmEdit
-        closeConfirmEdit={portal.close} 
-        editOneMeeting={editOneMeeting}
-        meeting={meeting}
-      />
-    );
-  }
-
   useEffect(() => {
     if (meetings.length === 0) {
       getAllMeetings();
@@ -168,7 +107,6 @@ const MeetingsPage = () => {
         </div>
         <button 
           type="button" 
-          onClick={() => addNewMeeting()}
           disabled={isDisabled}>Добавить</button>
       </div>
       <div className="meetings-info">
@@ -192,14 +130,12 @@ const MeetingsPage = () => {
                     <button 
                       type="button" 
                       className="delete-meeting__button"
-                      onClick={() => showConfirmDelete(meeting._id)}
                     >
                       <img src={deleteImg} alt="" />
                     </button>
                     <button 
                       type="button" 
                       className="edit-meeting__button"
-                      onClick={() => showConfirmEdit(meeting)}
                     >
                       <img src={editImg} alt="" />
                     </button>
