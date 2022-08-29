@@ -1,5 +1,4 @@
 import { registration, logIn, logOut, refresh } from 'src/services/AuthService';
-import { getMeetings, addMeeting, editMeeting, deleteMeeting } from 'src/services/MeetingService';
 
 export default class Store {
   user = {};
@@ -61,24 +60,6 @@ export default class Store {
       this.setAuth(false);
     } catch (error) {
       this.setAuth(false);
-      return error;
-    }
-  }
-
-  getAllMeetings = async () => {
-    try {
-      const resp = await getMeetings();
-      return resp;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  addNewMeeting = async () => {
-    try {
-      const resp = await addMeeting();
-      return resp;
-    } catch (error) {
       return error;
     }
   }
