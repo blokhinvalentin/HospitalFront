@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
+
+body {
+  background-color: #C5E9FF;
+}
+
+header {
+  position: relative;
+  display: flex;
+  height: 150px;
+  width: 100vw;
+  flex-direction: row;
+  align-items: center;
+  background-color: #C5E9FF;
+  font-size: 35px;
+  box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
