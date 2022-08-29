@@ -69,17 +69,19 @@ const MeetingsPage = () => {
     <>
       <Header title="Приемы"/>
       <div className="add-option">
-        <div className="name">
+        <div className="add-option__name">
           <p>Имя:</p>
           <input 
+            className="add-option__input"
             type="text" 
             value={meetingToAdd.patientName}
             onChange={(event) => handleChange('patientName', event.target.value)}
           />
         </div>
-        <div className="doctor">
+        <div className="add-option__doctor">
           <p>Врач:</p>
           <select
+            className="add-option__select"
             value={meetingToAdd.doctorName}
             onChange={(event) => handleChange('doctorName', event.target.value)}
           >
@@ -89,55 +91,64 @@ const MeetingsPage = () => {
             <option value="А. Б. Ввфывыфвфы">А. Б. Ввфывыфвфы</option>
           </select>
         </div>
-        <div className="date">
+        <div className="add-option__date">
           <p>Дата:</p>
           <input 
+            className="add-option__input"
             type="date"
             value={meetingToAdd.date} 
             onChange={(event) => handleChange('date', event.target.value)}
           />
         </div>
-        <div className="reports">
+        <div className="add-option__reports">
           <p>Жалобы:</p>
           <input 
+            className="add-option__input"
             type="text" 
             value={meetingToAdd.reports}
             onChange={(event) => handleChange('reports', event.target.value)}
           />
         </div>
         <button 
-          type="button" 
+          type="button"
+          className="add-option__button-add"
           disabled={isDisabled}>Добавить</button>
       </div>
       <div className="meetings-info">
         <div className="info-headers">
-          <p className="patient-name__header">Имя</p>
-          <p className="doctor-name__header">Врач</p>
-          <p className="meeting-date__header">Дата</p>
-          <p className="patient-reports__header">Жалобы</p>
-          <p className="edit-or-delete__header"></p>
+          <p className="info-headers__patient-name">Имя</p>
+          <p className="info-headers__doctor-name">Врач</p>
+          <p className="info-headers__meeting-date">Дата</p>
+          <p className="info-headers__patient-reports">Жалобы</p>
+          <p className="info-headers__edit-or-delete"></p>
         </div>
         <div className="meetings-info__list">
           <table className="table">
             <tbody className="table__body">
               {meetings.map((meeting, index) => (
                 <tr key={index}>
-                  <td className="cell__patient-name">{meeting.patientName}</td>
-                  <td className="cell__doctor-name">{meeting.doctorName}</td>
-                  <td className="cell__meeting-date">{moment(meeting.date).format('DD.MM.YYYY')}</td>
-                  <td className="cell__patient-reports">{meeting.reports}</td>
-                  <td className="edit-or-delete">
+                  <td className="table-cell__patient-name">{meeting.patientName}</td>
+                  <td className="table-cell__doctor-name">{meeting.doctorName}</td>
+                  <td className="table-cell__meeting-date">{moment(meeting.date).format('DD.MM.YYYY')}</td>
+                  <td className="table-cell__patient-reports">{meeting.reports}</td>
+                  <td className="table-cell__edit-or-delete">
                     <button 
                       type="button" 
-                      className="delete-meeting__button"
+                      className="button__delete-meeting"
                     >
-                      <img src={deleteImg} alt="" />
+                      <img 
+                        className="button__img"
+                        src={deleteImg} 
+                        alt="" />
                     </button>
                     <button 
                       type="button" 
-                      className="edit-meeting__button"
+                      className="button__edit-meeting"
                     >
-                      <img src={editImg} alt="" />
+                      <img 
+                        className="button__img"
+                        src={editImg} 
+                        alt="" />
                     </button>
                   </td>
                 </tr>
