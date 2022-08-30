@@ -8,6 +8,11 @@ const App = () => {
   const store = useContext(Context);
   const [isAuth, setIsAuth] = useState(store.isAuth);
 
+  useEffect(() => {
+    store.authCheck();
+    store.subscribe(isAuth => setIsAuth(isAuth));
+  }, [])
+
   if (isAuth) {
     return (
       <Routes>
