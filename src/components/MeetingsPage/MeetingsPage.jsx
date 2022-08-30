@@ -12,16 +12,39 @@ import './style.scss';
 const MeetingsPage = () => {
   const store  = useContext(Context);
   const portalManager = usePortals();
-  const [meetingToAdd, setMeetingToAdd] = useState({ 
+  const [newMeeting, setNewMeeting] = useState({ 
     patientName: '', 
     doctorName: '', 
     date: '', 
     reports: '' 
   });
   const [meetings, setMeetings] = useState([]);
-  const [isDisabled, setIsDisabled] = useState(true);
   const [isSnackbarOpened, setIsSnackbarOpened] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const isDisabled = true;
+  const doctors = ['Доктор врач', 'Иванов Иван Иванович', 'А. Б. Ввфывыфвфы'];
+  const meetingInfo = [
+    {
+      header: 'patient-name',
+      text: 'Имя'
+    },
+    {
+      header: 'doctor-name',
+      text: 'Врач'
+    },
+    {
+      header: 'meeting-date',
+      text: 'Дата'
+    },
+    {
+      header: 'patient-reports',
+      text: 'Жалобы'
+    },
+    {
+      header: 'edit-or-delete',
+      text: ''
+    }
+  ]
 
   const showSnackbar = (message) => {
     setIsSnackbarOpened(true);
@@ -29,7 +52,7 @@ const MeetingsPage = () => {
   };
 
   const handleChange = (key, value) => {
-    setMeetingToAdd({...meetingToAdd, [key]: value});
+    setNewMeeting({...newMeeting, [key]: value});
   }
 
   const getAllMeetings = async () => {
@@ -43,38 +66,24 @@ const MeetingsPage = () => {
     }
   }
 
-  const ifEmpty = () => {
-    if (meetingToAdd.patientName === ''
-      || meetingToAdd.doctorName === ''
-      || meetingToAdd.date === ''
-      || meetingToAdd.reports === ''
-    ) {
-      return setIsDisabled(true);
-    }
-    return setIsDisabled(false);
-  }
-
   const clearPatientInfo = () => {
-    setMeetingToAdd({...meetingToAdd, patientName: '', doctorName: '', date: '', reports: '' });
+    setNewMeeting({...newMeeting, patientName: '', doctorName: '', date: '', reports: '' });
   }
 
   useEffect(() => {
-    if (meetings.length === 0) {
-      getAllMeetings();
-    }
-    ifEmpty();
-  }, [meetingToAdd]);
+    getAllMeetings();
+  }, []);
 
   return (
     <>
-      <Header title="Приемы"/>
+      <Header title="Приемы" />
       <div className="add-option">
         <div className="add-option__name">
           <p>Имя:</p>
           <input 
             className="add-option__input"
             type="text" 
-            value={meetingToAdd.patientName}
+            value={newMeeting.patientName}
             onChange={(event) => handleChange('patientName', event.target.value)}
           />
         </div>
@@ -82,13 +91,13 @@ const MeetingsPage = () => {
           <p>Врач:</p>
           <select
             className="add-option__select"
-            value={meetingToAdd.doctorName}
+            value={newMeeting.doctorName}
             onChange={(event) => handleChange('doctorName', event.target.value)}
           >
             <option value="" disabled></option>
-            <option value="Доктор Врач">Доктор Врач</option>
-            <option value="Иванов Иван Иванович">Иванов Иван Иванович</option>
-            <option value="А. Б. Ввфывыфвфы">А. Б. Ввфывыфвфы</option>
+            {doctors.map((doctor, index) => (
+              <option key={index} value={doctor}>{doctor}</option>
+            ))}
           </select>
         </div>
         <div className="add-option__date">
@@ -96,7 +105,7 @@ const MeetingsPage = () => {
           <input 
             className="add-option__input"
             type="date"
-            value={meetingToAdd.date} 
+            value={newMeeting.date} 
             onChange={(event) => handleChange('date', event.target.value)}
           />
         </div>
@@ -105,22 +114,25 @@ const MeetingsPage = () => {
           <input 
             className="add-option__input"
             type="text" 
-            value={meetingToAdd.reports}
+            value={newMeeting.reports}
             onChange={(event) => handleChange('reports', event.target.value)}
           />
         </div>
         <button 
           type="button"
           className="add-option__button-add"
-          disabled={isDisabled}>Добавить</button>
+          disabled={isDisabled}
+        >
+          Добавить
+        </button>
       </div>
       <div className="meetings-info">
         <div className="info-headers">
-          <p className="info-headers__patient-name">Имя</p>
-          <p className="info-headers__doctor-name">Врач</p>
-          <p className="info-headers__meeting-date">Дата</p>
-          <p className="info-headers__patient-reports">Жалобы</p>
-          <p className="info-headers__edit-or-delete"></p>
+          {
+            meetingInfo.map((meeting, index) => (
+              <p key={index} className={`info-headers__${meeting.header}`}>{meeting.text}</p>
+            ))
+          }
         </div>
         <div className="meetings-info__list">
           <table className="table">
@@ -139,7 +151,8 @@ const MeetingsPage = () => {
                       <img 
                         className="button__img"
                         src={deleteImg} 
-                        alt="" />
+                        alt="" 
+                      />
                     </button>
                     <button 
                       type="button" 
@@ -148,7 +161,8 @@ const MeetingsPage = () => {
                       <img 
                         className="button__img"
                         src={editImg} 
-                        alt="" />
+                        alt="" 
+                      />
                     </button>
                   </td>
                 </tr>

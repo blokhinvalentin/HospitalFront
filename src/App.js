@@ -9,7 +9,6 @@ const App = () => {
   const [isAuth, setIsAuth] = useState(store.isAuth);
 
   useEffect(() => {
-    store.authCheck();
     store.subscribe(isAuth => setIsAuth(isAuth));
   }, [])
 
