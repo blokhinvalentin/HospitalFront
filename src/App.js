@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Context } from '.';
 import Authorization from 'src/components/Authorization/Authorization';
 import Registration from 'src/components/Registration/Registration';
-import MeetingsPage from 'src/components/MeetingsPage/MeetingsPage';
 import './App.scss';
 
 const App = () => {
@@ -14,15 +13,6 @@ const App = () => {
     store.authCheck();
     store.subscribe(isAuth => setIsAuth(isAuth));
   }, [])
-
-  if (isAuth) {
-    return (
-      <Routes>
-        <Route path="/meetings" element={<MeetingsPage />} />
-        <Route path="*" element={<Navigate to="meetings" />} />
-      </Routes>
-    )
-  }
 
   return (
     <Routes>
