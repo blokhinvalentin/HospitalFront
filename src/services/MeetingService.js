@@ -8,7 +8,7 @@ export const addMeeting = async (meeting) => await $api.post('/meetings', {
   patientName: meeting.patientName,
   doctorName: meeting.doctorName,
   date: meeting.date,
-  reports: meeting.reports
+  complaints: meeting.complaints
 });
 
 export const deleteMeeting = async (id) => await $api.delete(`/meetings/${id}`);
